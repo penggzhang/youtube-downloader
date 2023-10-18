@@ -16,7 +16,8 @@ You will be prompted to choose which component shall be downloaded:
 2. video - .mp4 file
 3. audio - .webm file
 4. all above
+5. just view the details of video
 
-Choose what you want, and the code will help you collect the files into the same folder as the script.
+Choose what you want, and the code will help you collect the files into the same folder as the python script.
 
 The .txt file is a clean-formatted script without timestamps, which is easier for reading.
