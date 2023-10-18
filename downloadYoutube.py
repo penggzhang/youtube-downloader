@@ -18,8 +18,14 @@ def on_progress(stream, chunk, bytes_remaining):
 
 def download_video(video):
     print('\nDownloading video ...')
+    
     video_stream = video.streams.filter(only_video=True, file_extension='mp4', res='1080p').first()
+    # If 1080p is unavailable, pick the stream with the highest resolution
+    if video_stream is None:
+        video_stream = video.streams.filter(file_extension='mp4', progressive=True).order_by('resolution').desc().first()
+
     if video_stream:
+        print(video_stream)
         video_stream.download()
         print(f'\nSuccessfully downloaded the video file!')
     else:
@@ -77,6 +83,10 @@ def download_transcript(video):
         else: 
             print('\nNo subtitle found in this video.')
 
+def view_video_details(video):
+    for stream in video.streams:
+        print(stream)
+
 def main():
     url = sys.argv[1]
 
@@ -87,15 +97,13 @@ def main():
     else:
         print(f"\nThe video title is: {my_video.title}")
 
-        # for stream in my_video.streams:
-        #     print(stream)
-
         user_choice = int(input("""
         Please choose which component you'd like to download from the video:
         1. transcript - both .srt and .txt files
         2. video - .mp4 file
         3. audio - .webm file
-        4. all above\n
+        4. all above
+        5. just view the video's details instead \n
         """))
         if user_choice == 1:
             download_transcript(my_video)
@@ -107,8 +115,10 @@ def main():
             download_transcript(my_video)
             download_video(my_video)
             download_audio(my_video)
+        elif user_choice == 5:
+            view_video_details(my_video)
         else:
-            print("\nPlease choose among 1 - 3.")
+            print("\nPlease choose among 1 - 5.")
 
 if __name__ == '__main__':
     main()
